@@ -1,0 +1,35 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import LandingPage from "../../components/LandingPage";
+import { DICTIONARIES, dirFor, isLocale } from "../../i18n";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  // Pre-list every non-default locale so dev/build are aware of the routes.
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "zh" } },
+    { params: { lang: "yo" } },
+    { params: { lang: "he" } },
+  ];
+}
+
+const lang = Astro.params.lang;
+if (!isLocale(lang)) {
+  return Astro.redirect(import.meta.env.BASE_URL);
+}
+const locale = lang;
+const dir = dirFor(locale);
+const t = DICTIONARIES[locale];
+
+// Overwrite middleware-detected values so direct /xx/ URLs always render xx.
+Astro.locals.locale = locale;
+Astro.locals.dir = dir;
+Astro.locals.t = t;
+---
+
+<Layout locale={locale} dir={dir} t={t}>
+  <LandingPage locale={locale} t={t} client:load />
+</Layout>
