@@ -1,0 +1,59 @@
+Since you are ready to execute on all of these fronts simultaneously, let's look at how these pieces lock together into a cohesive architecture.
+
+To help you visualize how a user request flows through your newly secured backend, fetches content from your expanded schema, and layers audio in the mobile app, here is a high-level view of the architecture:
+
+[ NoorJyoti Mobile App ] 
+       │
+       ▼ (Passes Secure Cookie / No Header Spoofing)
+[ Next.js Middleware Rate Limiter ] 
+       │
+       ▼ (Valid Access)
+[ API Endpoints / Playlists ] 
+       │
+       ▼ (Queries Multi-Tradition Schema)
+[ Prisma Database (Gita, Quran, Tao Te Ching) ]
+🛠️ Step-by-Step Implementation Guide
+1. Database Migrations
+Run the following command in your Replit shell to update your Prisma schema and generate your new client models:
+
+Bash
+npx prisma migrate dev --name expand_scriptures_and_playlists
+2. Seeding Your New Content
+To quickly test the new database setup with multi-tradition structures, create or add this snippet to your prisma/seed.ts file to populate the Tao Te Ching:
+
+TypeScript
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+
+async function main() {
+  const taoism = await prisma.scripture.create({
+    data: {
+      title: "Tao Te Ching",
+      tradition: "Taoism",
+      description: "The fundamental text of Taoist philosophy by Lao Tzu.",
+      sections: {
+        create: [
+          {
+            title: "Chapter 1",
+            sequenceOrder: 1,
+            verses: {
+              create: [
+                {
+                  verseNumber: "1.1",
+                  originalText: "道可道，非常道。名可名，非常名。",
+                  translation: "The Tao that can be told is not the eternal Tao. The name that can be named is not the eternal Name.",
+                  commentary: "Linguistic note: 'Tao' translates literally to 'The Way' or path."
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  });
+  console.log("Seeded new spiritual traditions successfully.");
+}
+
+main().catch(e => console.error(e));
+3. Deploying the Security Patches
+Once you paste the updated middleware.ts and /api/me/route.ts code provided in the previous step, go back to your Replit interface and click the [Republish project] button inside the Security Center panel. This will trigger a fresh, clean scan and resolve those high-severity vulnerabilities immediately.
