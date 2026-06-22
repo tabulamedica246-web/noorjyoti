@@ -1,0 +1,18 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const { locale, dir, t } = Astro.locals;
+const base = import.meta.env.BASE_URL;
+---
+
+<Layout locale={locale} dir={dir} t={t}>
+  <main class="min-h-screen flex flex-col items-center justify-center px-6 text-center">
+    <h1 class="font-display text-6xl text-[#F5D06A] mb-4">404</h1>
+    <p class="font-serif italic text-foreground/70 mb-8">
+      {locale === "en" ? "This path does not exist." : t.meta.ogShortDescription}
+    </p>
+    <a href={base} class="px-6 py-3 rounded-full bg-[#C9933A] text-[#131629] font-display tracking-wider">
+      {t.nav.openShort}
+    </a>
+  </main>
+</Layout>
