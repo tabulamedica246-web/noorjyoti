@@ -1,0 +1,10 @@
+---
+import Layout from "../layouts/Layout.astro";
+import LandingPage from "../components/LandingPage";
+
+const { locale, dir, t } = Astro.locals;
+---
+
+<Layout locale={locale} dir={dir} t={t}>
+  <LandingPage locale={locale} t={t} client:load />
+</Layout>
