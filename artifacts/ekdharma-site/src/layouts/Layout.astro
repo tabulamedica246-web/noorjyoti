@@ -1,0 +1,116 @@
+---
+import "../styles/global.css";
+import type { Locale, TranslationDict } from "../i18n";
+import { SUPPORTED_LOCALES, pathForLocale } from "../i18n";
+
+interface Props {
+  locale: Locale;
+  dir: "ltr" | "rtl";
+  t: TranslationDict;
+}
+
+const { locale, dir, t } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+// Build absolute canonical + per-locale alternate URLs for SEO.
+// Use the fixed site origin from Astro config (server-side trusted value)
+// rather than Astro.url.origin, which reflects the incoming request host and
+// can be poisoned by a spoofed Host header.
+const origin = Astro.site?.origin ?? "https://noorjyoti.com";
+const canonical = origin + base + pathForLocale(locale);
+const alternates = SUPPORTED_LOCALES.map((l) => ({
+  code: l.code,
+  href: origin + base + l.path,
+}));
+
+const ogImage = origin + base + "/opengraph.jpg";
+
+// Structured data for SEO / GEO / answer engines.
+const orgSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "NoorJyoti",
+  url: origin + base + "/",
+  logo: origin + base + "/favicon.svg",
+  description: t.meta.description,
+  sameAs: ["https://noorjyoti.com", "https://noorjyoti.app", "https://noorjyoti.world"],
+};
+const siteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "NoorJyoti",
+  url: origin + base + "/",
+  inLanguage: locale,
+  description: t.meta.description,
+};
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "What is NoorJyoti?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "NoorJyoti is a free sacred-audio library that reads the world's great scriptures aloud in soothing AI voices across nine languages.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Which scriptures can I listen to?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "NoorJyoti covers 21 scriptures across the major traditions, including the Bible, Quran, Torah, Bhagavad Gita, Dhammapada, Upanishads, Guru Granth Sahib and the Jain Agamas.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Is NoorJyoti free to use?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. NoorJyoti is free, and the scripture texts it reads are in the public domain.",
+      },
+    },
+  ],
+};
+---
+
+<!DOCTYPE html>
+<html lang={locale} dir={dir}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0f1f" />
+    <title>{t.meta.title}</title>
+    <meta name="description" content={t.meta.description} />
+    <meta name="robots" content="index, follow" />
+
+    <link rel="canonical" href={canonical} />
+    {alternates.map((a) => (
+      <link rel="alternate" hreflang={a.code} href={a.href} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={origin + base + "/"} />
+
+    <meta property="og:site_name" content="NoorJyoti" />
+    <meta property="og:title" content={t.meta.title} />
+    <meta property="og:description" content={t.meta.ogShortDescription} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={locale} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={t.meta.title} />
+    <meta name="twitter:description" content={t.meta.ogShortDescription} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    <link rel="manifest" href={`${base}/site.webmanifest`} />
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(siteSchema)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
