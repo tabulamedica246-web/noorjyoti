@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NoorJyoti — One Light · All Scriptures · Every Tongue</title>
+<meta name="description" content="The world's sacred scriptures — Bhagavad Gita, Quran, Bible, Ramayana, Guru Granth Sahib, Torah, Tripitaka — in soothing AI voices across 9 languages. One light. One humanity.">
+<meta property="og:title" content="NoorJyoti — One Light, All Scriptures">
+<meta property="og:description" content="All scriptures. All languages. One beautiful app.">
+<meta property="og:image" content="https://noorjyoti.com/og-image.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night:    #080C1A;
+    --cosmos:   #0D1025;
+    --card:     #131629;
+    --gold:     #F5D06A;
+    --amber:    #C9933A;
+    --amber2:   #E8A840;
+    --parchment:#E8DCC8;
+    --dim:      rgba(232,220,200,0.55);
+    --dimmer:   rgba(232,220,200,0.3);
+    --border:   rgba(201,147,58,0.2);
+    --teal:     #1D9E75;
+    --violet:   #534AB7;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--night);
+    color: var(--parchment);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── Stars canvas ── */
+  #stars {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0;
+    overflow: hidden;
+  }
+  .star {
+    position: absolute; border-radius: 50%;
+    background: #F5D06A;
+    animation: twinkle var(--d) infinite ease-in-out;
+    animation-delay: var(--dl);
+  }
+  @keyframes twinkle {
+    0%,100% { opacity: 0.05; transform: scale(0.7); }
+    50%      { opacity: 0.9; transform: scale(1.3); }
+  }
+
+  /* ── Nav ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 0 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+    background: rgba(8,12,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 0.5px solid var(--border);
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 12px;
+    text-decoration: none;
+  }
+  .nav-icon {
+    width: 36px; height: 36px; border-radius: 9px;
+    background: var(--amber);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .nav-name {
+    font-family: 'Cinzel', serif;
+    font-size: 18px; font-weight: 700;
+    color: var(--gold); letter-spacing: 2px;
+  }
+  .nav-links {
+    display: flex; align-items: center; gap: 32px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 13px; color: var(--dim);
+    text-decoration: none; letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-cta {
+    padding: 8px 20px; border-radius: 20px;
+    background: var(--amber); color: var(--night) !important;
+    font-weight: 500 !important; font-size: 13px !important;
+    letter-spacing: 0.3px !important;
+    transition: background 0.2s, transform 0.15s !important;
+  }
+  .nav-cta:hover { background: var(--gold) !important; transform: scale(1.03); }
+
+  /* ── Sections ── */
+  section { position: relative; z-index: 1; }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 100px 5% 80px;
+  }
+  .hero-cosmos {
+    position: relative;
+    width: 260px; height: 260px;
+    margin: 0 auto 48px;
+  }
+  .hero-cosmos svg { width: 100%; height: 100%; }
+  .cosmos-pulse {
+    position: absolute; inset: -20px;
+    border-radius: 50%;
+    border: 0.5px solid rgba(201,147,58,0.15);
+    animation: cosmospulse 4s infinite ease-in-out;
+  }
+  .cosmos-pulse2 {
+    position: absolute; inset: -44px;
+    border-radius: 50%;
+    border: 0.5px solid rgba(201,147,58,0.08);
+    animation: cosmospulse 4s 1.5s infinite ease-in-out;
+  }
+  @keyframes cosmospulse {
+    0%,100% { transform: scale(0.96); opacity: 0.4; }
+    50%      { transform: scale(1.04); opacity: 1;   }
+  }
+  .hero-tagline {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(13px, 2vw, 16px);
+    letter-spacing: 4px; color: var(--amber);
+    margin-bottom: 16px;
+    animation: fadeup 0.8s 0.2s both ease-out;
+  }
+  .hero-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(42px, 8vw, 86px);
+    font-weight: 700; line-height: 1.05;
+    background: linear-gradient(135deg, #F5D06A 0%, #E8A840 40%, #F5D06A 80%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    animation: fadeup 0.8s 0.4s both ease-out;
+  }
+  .hero-sub {
+    font-family: 'Crimson Pro', serif;
+    font-size: clamp(18px, 3vw, 24px);
+    font-style: italic;
+    color: var(--dim); line-height: 1.6;
+    max-width: 580px; margin: 0 auto 40px;
+    animation: fadeup 0.8s 0.6s both ease-out;
+  }
+  .hero-langs {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+    max-width: 640px; margin: 0 auto 48px;
+    animation: fadeup 0.8s 0.8s both ease-out;
+  }
+  .lang-pill {
+    padding: 6px 14px; border-radius: 20px;
+    border: 0.5px solid var(--border);
+    background: rgba(201,147,58,0.06);
+    font-size: 14px; color: var(--parchment);
+    font-family: serif;
+  }
+  .hero-btns {
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    animation: fadeup 0.8s 1s both ease-out;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 32px; border-radius: 32px;
+    background: var(--amber); color: var(--night);
+    font-family: 'Cinzel', serif; font-size: 14px; font-weight: 600;
+    letter-spacing: 1px; text-decoration: none;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 0 40px rgba(201,147,58,0.3);
+  }
+  .btn-primary:hover {
+    background: var(--gold); transform: translateY(-2px);
+    box-shadow: 0 0 60px rgba(245,208,106,0.4);
+  }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 32px; border-radius: 32px;
+    border: 0.5px solid var(--border);
+    background: rgba(201,147,58,0.06);
+    color: var(--parchment);
+    font-family: 'Cinzel', serif; font-size: 14px;
+    letter-spacing: 1px; text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .btn-secondary:hover {
+    border-color: rgba(201,147,58,0.5);
+    background: rgba(201,147,58,0.12);
+  }
+  @keyframes fadeup {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SCROLL HINT ── */
+  .scroll-hint {
+    position: absolute; bottom: 32px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    opacity: 0.4;
+    animation: bounce 2s infinite;
+  }
+  .scroll-hint span { font-size: 10px; letter-spacing: 2px; color: var(--amber); }
+  @keyframes bounce {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50%      { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* ── UNITY STRIP ── */
+  #unity-strip {
+    overflow: hidden;
+    border-top: 0.5px solid var(--border);
+    border-bottom: 0.5px solid var(--border);
+    padding: 14px 0;
+    background: rgba(201,147,58,0.04);
+  }
+  .strip-track {
+    display: flex; gap: 48px;
+    animation: scrolltrack 30s linear infinite;
+    white-space: nowrap;
+  }
+  .strip-item {
+    display: flex; align-items: center; gap: 12px;
+    flex-shrink: 0;
+    font-family: 'Crimson Pro', serif;
+    font-style: italic; font-size: 15px;
+    color: var(--dim);
+  }
+  .strip-dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--amber); flex-shrink: 0;
+  }
+  @keyframes scrolltrack {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ── SCRIPTURES SECTION ── */
+  #scriptures {
+    padding: 100px 5%;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .section-eyebrow {
+    font-size: 11px; letter-spacing: 3px;
+    color: var(--amber); margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 700; color: var(--gold);
+    margin-bottom: 14px; line-height: 1.2;
+  }
+  .section-sub {
+    font-family: 'Crimson Pro', serif;
+    font-size: 18px; font-style: italic;
+    color: var(--dim); max-width: 500px;
+    line-height: 1.6; margin-bottom: 56px;
+  }
+  .scripture-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .scripture-card {
+    background: var(--card);
+    border: 0.5px solid rgba(255,255,255,0.07);
+    border-radius: 18px;
+    padding: 24px;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s, background 0.2s;
+    text-decoration: none; display: block;
+  }
+  .scripture-card:hover {
+    border-color: var(--sc-color, var(--amber));
+    transform: translateY(-4px);
+    background: rgba(255,255,255,0.04);
+  }
+  .sc-top {
+    display: flex; align-items: flex-start;
+    justify-content: space-between; margin-bottom: 16px;
+  }
+  .sc-emoji { font-size: 32px; }
+  .sc-origin {
+    font-size: 10px; letter-spacing: 1.5px;
+    color: var(--sc-color, var(--amber));
+    padding: 3px 10px; border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 0.5px solid rgba(255,255,255,0.08);
+    margin-top: 4px;
+  }
+  .sc-name {
+    font-family: 'Cinzel', serif;
+    font-size: 17px; font-weight: 600;
+    color: var(--gold); margin-bottom: 4px;
+  }
+  .sc-meta {
+    font-size: 11px; color: var(--dimmer);
+    letter-spacing: 0.5px; margin-bottom: 14px;
+  }
+  .sc-bar {
+    height: 2px; border-radius: 1px;
+    background: rgba(255,255,255,0.06);
+    overflow: hidden; margin-bottom: 14px;
+  }
+  .sc-fill {
+    height: 100%; border-radius: 1px;
+    background: var(--sc-color, var(--amber));
+    width: 0; transition: width 1.2s ease-out;
+  }
+  .sc-teaching {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic; font-size: 14px;
+    color: var(--dim); line-height: 1.5;
+  }
+
+  /* ── FEATURES ── */
+  #features {
+    padding: 100px 5%;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .feature-card {
+    background: var(--card);
+    border: 0.5px solid rgba(255,255,255,0.07);
+    border-radius: 16px; padding: 28px 24px;
+    transition: border-color 0.2s;
+  }
+  .feature-card:hover { border-color: rgba(201,147,58,0.3); }
+  .feat-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: rgba(201,147,58,0.1);
+    border: 0.5px solid rgba(201,147,58,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 18px;
+  }
+  .feat-title {
+    font-family: 'Cinzel', serif;
+    font-size: 16px; color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .feat-desc {
+    font-size: 14px; color: var(--dim);
+    line-height: 1.7;
+  }
+
+  /* ── LANGUAGES ── */
+  #languages {
+    padding: 100px 5%;
+    background: linear-gradient(180deg, transparent 0%, rgba(201,147,58,0.03) 50%, transparent 100%);
+  }
+  .lang-inner { max-width: 1200px; margin: 0 auto; }
+  .lang-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px; margin-top: 48px;
+  }
+  .lang-card {
+    background: var(--card);
+    border: 0.5px solid rgba(255,255,255,0.07);
+    border-radius: 14px; padding: 20px 16px;
+    text-align: center;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+  .lang-card:hover { border-color: var(--border); transform: translateY(-3px); }
+  .lc-script {
+    font-family: serif; font-size: 24px;
+    color: var(--gold); margin-bottom: 6px;
+    display: block;
+  }
+  .lc-name {
+    font-size: 11px; letter-spacing: 1px;
+    color: var(--dimmer);
+  }
+
+  /* ── VOICES ── */
+  #voices {
+    padding: 100px 5%;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .voice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px; margin-top: 48px;
+  }
+  .voice-card {
+    background: var(--card);
+    border: 0.5px solid rgba(255,255,255,0.07);
+    border-radius: 16px; padding: 24px;
+    transition: border-color 0.2s;
+  }
+  .voice-card:hover { border-color: rgba(201,147,58,0.3); }
+  .voice-avatar {
+    width: 52px; height: 52px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 14px;
+  }
+  .vc-female { background: rgba(212,83,126,0.15); border: 0.5px solid rgba(212,83,126,0.3); }
+  .vc-male   { background: rgba(55,138,221,0.15); border: 0.5px solid rgba(55,138,221,0.3); }
+  .vc-gender {
+    font-size: 9px; letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .vc-female-label { color: #D4537E; }
+  .vc-male-label   { color: #378ADD; }
+  .vc-name {
+    font-family: 'Cinzel', serif;
+    font-size: 18px; color: var(--gold);
+    margin-bottom: 2px;
+  }
+  .vc-desc { font-size: 13px; color: var(--dim); margin-bottom: 14px; }
+  .vc-wave {
+    display: flex; align-items: center; gap: 2px;
+    height: 28px;
+  }
+  .vc-bar {
+    width: 3px; border-radius: 2px;
+    background: rgba(201,147,58,0.3);
+    animation: wvbar var(--d, 0.6s) infinite ease-in-out;
+    animation-delay: var(--dl, 0s);
+  }
+  @keyframes wvbar {
+    0%,100% { transform: scaleY(0.3); }
+    50%      { transform: scaleY(1); }
+  }
+
+  /* ── UNITY ── */
+  #unity {
+    padding: 100px 5%;
+    background: linear-gradient(180deg, transparent 0%, rgba(8,12,26,0.8) 50%, transparent 100%);
+  }
+  .unity-inner { max-width: 860px; margin: 0 auto; text-align: center; }
+  .unity-quotes {
+    display: grid; gap: 14px; margin-top: 48px;
+  }
+  .unity-q {
+    background: var(--card);
+    border: 0.5px solid rgba(255,255,255,0.07);
+    border-radius: 14px; padding: 20px 24px;
+    border-left: 3px solid var(--amber);
+    text-align: left;
+    transition: border-left-color 0.2s;
+  }
+  .unity-q:hover { border-left-color: var(--gold); }
+  .uq-text {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic; font-size: 17px;
+    color: var(--parchment); line-height: 1.6;
+    margin-bottom: 8px;
+  }
+  .uq-source {
+    font-size: 11px; letter-spacing: 1px;
+    color: var(--amber); text-align: right;
+  }
+
+  /* ── CTA ── */
+  #cta {
+    padding: 120px 5%;
+    text-align: center;
+  }
+  .cta-inner { max-width: 720px; margin: 0 auto; }
+  .cta-cosmos-small {
+    width: 120px; height: 120px; margin: 0 auto 40px;
+  }
+  .store-buttons {
+    display: flex; gap: 14px; justify-content: center;
+    flex-wrap: wrap; margin-top: 36px;
+  }
+  .store-btn {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 24px; border-radius: 14px;
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    text-decoration: none; color: var(--parchment);
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    min-width: 180px;
+  }
+  .store-btn:hover {
+    border-color: rgba(201,147,58,0.5);
+    background: rgba(201,147,58,0.08);
+    transform: translateY(-2px);
+  }
+  .sb-icon { font-size: 28px; }
+  .sb-sub { font-size: 10px; color: var(--dimmer); letter-spacing: 0.5px; }
+  .sb-name { font-family: 'Cinzel', serif; font-size: 15px; color: var(--gold); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 0.5px solid var(--border);
+    padding: 48px 5%;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 24px;
+    text-align: center;
+  }
+  .footer-name {
+    font-family: 'Cinzel', serif;
+    font-size: 22px; color: var(--gold); letter-spacing: 3px;
+  }
+  .footer-tagline {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic; font-size: 15px;
+    color: var(--dim);
+  }
+  .footer-langs {
+    font-size: 18px; color: var(--amber); letter-spacing: 2px;
+    font-family: serif; opacity: 0.7;
+  }
+  .footer-links {
+    display: flex; gap: 24px; flex-wrap: wrap;
+    justify-content: center; list-style: none;
+  }
+  .footer-links a {
+    font-size: 12px; color: var(--dimmer);
+    text-decoration: none; letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+  .footer-copy {
+    font-size: 11px; color: rgba(232,220,200,0.2);
+    letter-spacing: 0.5px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .scripture-grid { grid-template-columns: 1fr; }
+    .hero-cosmos { width: 200px; height: 200px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Stars -->
+<div id="stars"></div>
+
+<!-- Nav -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-icon">✦</div>
+    <span class="nav-name">NoorJyoti</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#scriptures">Scriptures</a></li>
+    <li><a href="#languages">Languages</a></li>
+    <li><a href="#voices">Voices</a></li>
+    <li><a href="#unity">Unity</a></li>
+    <li><a href="#cta" class="nav-cta">Download App</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-cosmos">
+    <div class="cosmos-pulse2"></div>
+    <div class="cosmos-pulse"></div>
+    <svg viewBox="0 0 260 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="130" cy="130" r="128" fill="#080C1A" stroke="#C9933A" stroke-width="0.5"/>
+      <circle cx="130" cy="130" r="106" fill="none" stroke="#C9933A" stroke-width="0.3" stroke-dasharray="2,5"/>
+      <circle cx="130" cy="130" r="82"  fill="none" stroke="#C9933A" stroke-width="0.3" stroke-dasharray="1,4"/>
+      <circle cx="130" cy="130" r="58"  fill="none" stroke="#E8A840" stroke-width="0.4" stroke-dasharray="1,3"/>
+      <circle cx="130" cy="130" r="36"  fill="#1A1428" stroke="#E8A840" stroke-width="0.7"/>
+      <circle cx="130" cy="130" r="21"  fill="#C9933A"/>
+      <circle cx="130" cy="130" r="11"  fill="#F5D06A"/>
+      <circle cx="130" cy="130" r="5"   fill="#FFF8EC"/>
+      <line x1="130" y1="2"   x2="130" y2="94"  stroke="#C9933A" stroke-width="0.5" opacity="0.6"/>
+      <line x1="130" y1="166" x2="130" y2="258" stroke="#C9933A" stroke-width="0.5" opacity="0.6"/>
+      <line x1="2"   y1="130" x2="94"  y2="130" stroke="#C9933A" stroke-width="0.5" opacity="0.6"/>
+      <line x1="166" y1="130" x2="258" y2="130" stroke="#C9933A" stroke-width="0.5" opacity="0.6"/>
+      <line x1="26"  y1="26"  x2="88"  y2="88"  stroke="#C9933A" stroke-width="0.4" opacity="0.4"/>
+      <line x1="172" y1="172" x2="234" y2="234" stroke="#C9933A" stroke-width="0.4" opacity="0.4"/>
+      <line x1="234" y1="26"  x2="172" y2="88"  stroke="#C9933A" stroke-width="0.4" opacity="0.4"/>
+      <line x1="26"  y1="234" x2="88"  y2="172" stroke="#C9933A" stroke-width="0.4" opacity="0.4"/>
+      <text x="130" y="15"  text-anchor="middle" font-size="13" fill="#F5D06A" font-family="serif">نور</text>
+      <text x="130" y="253" text-anchor="middle" font-size="13" fill="#F5D06A" font-family="serif">ज्योति</text>
+      <text x="10"  y="134" font-size="11" fill="#F5D06A" font-family="serif">אוֹר</text>
+      <text x="220" y="134" font-size="11" fill="#F5D06A" font-family="serif">光</text>
+      <text x="24"  y="40"  text-anchor="middle" font-size="10" fill="#E8A840" font-family="serif">ਜੋਤ</text>
+      <text x="236" y="40"  text-anchor="middle" font-size="10" fill="#E8A840" font-family="serif">Φῶς</text>
+      <text x="24"  y="224" text-anchor="middle" font-size="10" fill="#E8A840" font-family="serif">ஒளி</text>
+      <text x="236" y="224" text-anchor="middle" font-size="10" fill="#E8A840" font-family="serif">আলো</text>
+      <text x="9"   y="80"  font-size="9"  fill="#C9933A" font-family="serif" opacity="0.7">ضياء</text>
+      <text x="228" y="80"  font-size="9"  fill="#C9933A" font-family="serif" opacity="0.7">Licht</text>
+      <text x="9"   y="185" font-size="9"  fill="#C9933A" font-family="serif" opacity="0.7">Lux</text>
+      <text x="225" y="185" font-size="9"  fill="#C9933A" font-family="serif" opacity="0.7">ਨੂਰ</text>
+      <text x="130" y="125" text-anchor="middle" font-family="'Cinzel',Georgia,serif" font-size="9" font-weight="700" fill="#F5D06A" letter-spacing="2">NOORJYOTI</text>
+    </svg>
+  </div>
+
+  <div class="hero-tagline">ONE LIGHT · ALL SCRIPTURES · EVERY TONGUE</div>
+  <h1 class="hero-title">NoorJyoti</h1>
+  <p class="hero-sub">
+    The world's sacred wisdom — read to you in soothing AI voices,<br>
+    in the language of your heart.
+  </p>
+
+  <div class="hero-langs">
+    <span class="lang-pill">हिन्दी</span>
+    <span class="lang-pill">ਪੰਜਾਬੀ</span>
+    <span class="lang-pill">ગુજરાતી</span>
+    <span class="lang-pill">తెలుగు</span>
+    <span class="lang-pill">മലയാളം</span>
+    <span class="lang-pill">தமிழ்</span>
+    <span class="lang-pill">मराठी</span>
+    <span class="lang-pill">বাংলা</span>
+    <span class="lang-pill">English</span>
+  </div>
+
+  <div class="hero-btns">
+    <a href="#cta" class="btn-primary">✦ Download Free</a>
+    <a href="#scriptures" class="btn-secondary">Explore Scriptures</a>
+  </div>
+
+  <div class="scroll-hint">
+    <span>SCROLL</span>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M8 3v10M4 9l4 4 4-4" stroke="#C9933A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+</section>
+
+<!-- UNITY STRIP -->
+<div id="unity-strip">
+  <div class="strip-track">
+    <span class="strip-item"><span class="strip-dot"></span>Truth is one — the sages call it by many names · Rig Veda</span>
+    <span class="strip-item"><span class="strip-dot"></span>Love thy neighbour as thyself · Bible</span>
+    <span class="strip-item"><span class="strip-dot"></span>We made you peoples and tribes that you may know one another · Quran</span>
+    <span class="strip-item"><span class="strip-dot"></span>Ik Onkar — There is only one God · Guru Granth Sahib</span>
+    <span class="strip-item"><span class="strip-dot"></span>The whole world is one family · Mahopanishad</span>
+    <span class="strip-item"><span class="strip-dot"></span>Hurt not others in ways you would find hurtful · Tripitaka</span>
+    <span class="strip-item"><span class="strip-dot"></span>Truth is one — the sages call it by many names · Rig Veda</span>
+    <span class="strip-item"><span class="strip-dot"></span>Love thy neighbour as thyself · Bible</span>
+    <span class="strip-item"><span class="strip-dot"></span>We made you peoples and tribes that you may know one another · Quran</span>
+    <span class="strip-item"><span class="strip-dot"></span>Ik Onkar — There is only one God · Guru Granth Sahib</span>
+    <span class="strip-item"><span class="strip-dot"></span>The whole world is one family · Mahopanishad</span>
+    <span class="strip-item"><span class="strip-dot"></span>Hurt not others in ways you would find hurtful · Tripitaka</span>
+  </div>
+</div>
+
+<!-- SCRIPTURES -->
+<section id="scriptures">
+  <div style="max-width:1200px;margin:0 auto;padding:100px 5%">
+  <div class="section-eyebrow">SACRED TEXTS</div>
+  <h2 class="section-title">Seven scriptures.<br>One family.</h2>
+  <p class="section-sub">Each tradition has its own voice. Together, they sing the same truth.</p>
+
+  <div class="scripture-grid" id="scripture-grid"></div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-eyebrow">WHY NOORJYOTI</div>
+  <h2 class="section-title">Built with reverence.<br>Designed for everyone.</h2>
+  <p class="section-sub">Every design decision was made with respect for all traditions equally.</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feat-icon">🎙</div>
+      <div class="feat-title">Studio-quality AI voices</div>
+      <p class="feat-desc">Six soothing voices — three female, three male — generated at HD quality with a gentle recitation pace. Not robotic. Not rushed. Sacred.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🌐</div>
+      <div class="feat-title">9 languages, natively</div>
+      <p class="feat-desc">Not just translated — each scripture is available in the language it lives closest to. Hindi, Punjabi, Gujarati, Telugu, Malayalam, Tamil, Marathi, Bengali, English.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">⚖️</div>
+      <div class="feat-title">No faith is elevated</div>
+      <p class="feat-desc">The Quran, the Gita, the Bible — each receives identical care, identical screen space, identical audio quality. Every tradition is home here.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">📴</div>
+      <div class="feat-title">Offline listening</div>
+      <p class="feat-desc">Download chapters for travel, prayer time, or meditation. Your scripture travels with you — no signal required.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🚫</div>
+      <div class="feat-title">Zero ads, forever</div>
+      <p class="feat-desc">Sacred texts deserve sacred space. NoorJyoti will never carry advertisements. Your moments of contemplation belong only to you.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">👨‍👩‍👧‍👦</div>
+      <div class="feat-title">Built for families</div>
+      <p class="feat-desc">Switch languages in one tap. Grandparents in Gujarati, grandchildren in English — the same scripture, the same moment, different tongues.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LANGUAGES -->
+<section id="languages">
+  <div class="lang-inner">
+    <div class="section-eyebrow">YOUR MOTHER TONGUE</div>
+    <h2 class="section-title">Sacred words in the<br>language of your soul.</h2>
+    <p class="section-sub">When you hear truth in your own language, it doesn't just reach your mind — it reaches your heart.</p>
+
+    <div class="lang-grid">
+      <div class="lang-card"><span class="lc-script">हिन्दी</span><div class="lc-name">HINDI</div></div>
+      <div class="lang-card"><span class="lc-script">ਪੰਜਾਬੀ</span><div class="lc-name">PUNJABI</div></div>
+      <div class="lang-card"><span class="lc-script">ગુજરાતી</span><div class="lc-name">GUJARATI</div></div>
+      <div class="lang-card"><span class="lc-script">తెలుగు</span><div class="lc-name">TELUGU</div></div>
+      <div class="lang-card"><span class="lc-script">മലയാളം</span><div class="lc-name">MALAYALAM</div></div>
+      <div class="lang-card"><span class="lc-script">தமிழ்</span><div class="lc-name">TAMIL</div></div>
+      <div class="lang-card"><span class="lc-script">मराठी</span><div class="lc-name">MARATHI</div></div>
+      <div class="lang-card"><span class="lc-script">বাংলা</span><div class="lc-name">BENGALI</div></div>
+      <div class="lang-card"><span class="lc-script">English</span><div class="lc-name">ENGLISH</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- VOICES -->
+<section id="voices">
+  <div class="section-eyebrow">AI VOICES</div>
+  <h2 class="section-title">Choose the voice<br>that moves your soul.</h2>
+  <p class="section-sub">Every voice was tuned to a gentle recitation pace — the way a wise elder would read to you.</p>
+
+  <div class="voice-grid" id="voice-grid"></div>
+</section>
+
+<!-- UNITY -->
+<section id="unity">
+  <div class="unity-inner">
+    <div class="section-eyebrow">ALL TRADITIONS SPEAK AS ONE</div>
+    <h2 class="section-title">Different rivers.<br>One ocean.</h2>
+    <p class="section-sub" style="margin:0 auto">Every scripture across every century has whispered the same message. NoorJyoti lets you hear them all together.</p>
+
+    <div class="unity-quotes">
+      <div class="unity-q">
+        <p class="uq-text">"Truth is one — the sages call it by many names."</p>
+        <div class="uq-source">RIG VEDA · 1.164.46 · Hindu</div>
+      </div>
+      <div class="unity-q">
+        <p class="uq-text">"Love thy neighbour as thyself."</p>
+        <div class="uq-source">MARK 12:31 · The Bible · Christian</div>
+      </div>
+      <div class="unity-q">
+        <p class="uq-text">"We have made you into peoples and tribes so that you may come to know one another."</p>
+        <div class="uq-source">QURAN 49:13 · Islam</div>
+      </div>
+      <div class="unity-q">
+        <p class="uq-text">"There is only one God and He is the eternal truth."</p>
+        <div class="uq-source">GURU GRANTH SAHIB · Mool Mantar · Sikh</div>
+      </div>
+      <div class="unity-q">
+        <p class="uq-text">"Hurt not others in ways that you yourself would find hurtful."</p>
+        <div class="uq-source">TRIPITAKA · Udana 5:18 · Buddhist</div>
+      </div>
+      <div class="unity-q">
+        <p class="uq-text">"The whole world is one family."</p>
+        <div class="uq-source">MAHOPANISHAD 6.72 · Hindu</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-inner">
+    <div class="cta-cosmos-small">
+      <svg viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="58" fill="#080C1A" stroke="#C9933A" stroke-width="0.5"/>
+        <circle cx="60" cy="60" r="40" fill="none" stroke="#C9933A" stroke-width="0.3" stroke-dasharray="2,4"/>
+        <circle cx="60" cy="60" r="22" fill="#1A1428" stroke="#E8A840" stroke-width="0.7"/>
+        <circle cx="60" cy="60" r="12" fill="#C9933A"/>
+        <circle cx="60" cy="60" r="6"  fill="#F5D06A"/>
+        <circle cx="60" cy="60" r="2.5" fill="#FFF8EC"/>
+        <line x1="60" y1="2"  x2="60" y2="38" stroke="#C9933A" stroke-width="0.6" opacity="0.7"/>
+        <line x1="60" y1="82" x2="60" y2="118" stroke="#C9933A" stroke-width="0.6" opacity="0.7"/>
+        <line x1="2"  y1="60" x2="38" y2="60" stroke="#C9933A" stroke-width="0.6" opacity="0.7"/>
+        <line x1="82" y1="60" x2="118" y2="60" stroke="#C9933A" stroke-width="0.6" opacity="0.7"/>
+      </svg>
+    </div>
+    <div class="section-eyebrow">BEGIN YOUR JOURNEY</div>
+    <h2 class="section-title">One app.<br>All of humanity's wisdom.</h2>
+    <p class="section-sub" style="margin:0 auto 0">Free to download. Sacred to experience.</p>
+    <div class="store-buttons">
+      <a href="#" class="store-btn">
+        <span class="sb-icon">🍎</span>
+        <div><div class="sb-sub">DOWNLOAD ON THE</div><div class="sb-name">App Store</div></div>
+      </a>
+      <a href="#" class="store-btn">
+        <span class="sb-icon">▶</span>
+        <div><div class="sb-sub">GET IT ON</div><div class="sb-name">Google Play</div></div>
+      </a>
+      <a href="#" class="store-btn">
+        <span class="sb-icon">🌐</span>
+        <div><div class="sb-sub">OPEN IN</div><div class="sb-name">Web Browser</div></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-name">NOORJYOTI</div>
+  <div class="footer-tagline">One light · All scriptures · Every tongue</div>
+  <div class="footer-langs">نور · ज्योति · אוֹר · 光 · ਜੋਤ · ஒளி · আলো · Φῶς</div>
+  <ul class="footer-links">
+    <li><a href="#">About</a></li>
+    <li><a href="#">Scriptures</a></li>
+    <li><a href="#">Languages</a></li>
+    <li><a href="#">Blog</a></li>
+    <li><a href="#">Privacy Policy</a></li>
+    <li><a href="#">Terms of Service</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <div class="footer-copy">© 2025 NoorJyoti Inc. · All traditions honoured equally · No religious sentiment harmed</div>
+</footer>
+
+<script>
+const SCRIPTURES = [
+  { emoji:"🪷", name:"Bhagavad Gita",    origin:"Hindu",     color:"#FF9800", chapters:18,  pct:72, teaching:"The soul is eternal, beyond birth and death." },
+  { emoji:"🏹", name:"Ramayana",          origin:"Hindu",     color:"#E91E63", chapters:7,   pct:58, teaching:"Where there is dharma, there is victory." },
+  { emoji:"✝️", name:"Bible",             origin:"Christian", color:"#2196F3", chapters:66,  pct:88, teaching:"Love is patient, love is kind." },
+  { emoji:"☪️", name:"Quran",             origin:"Islam",     color:"#4CAF50", chapters:114, pct:95, teaching:"Allah is with those who are patient." },
+  { emoji:"☬",  name:"Guru Granth Sahib", origin:"Sikh",      color:"#9C27B0", chapters:1430,pct:100,teaching:"Ik Onkar — There is only one Creator." },
+  { emoji:"✡️", name:"Torah",             origin:"Jewish",    color:"#00BCD4", chapters:5,   pct:40, teaching:"Justice, justice you shall pursue." },
+  { emoji:"☸️", name:"Tripitaka",         origin:"Buddhist",  color:"#8BC34A", chapters:3,   pct:35, teaching:"The mind is everything; what you think, you become." },
+];
+
+const grid = document.getElementById('scripture-grid');
+SCRIPTURES.forEach(s => {
+  const card = document.createElement('a');
+  card.href = '#';
+  card.className = 'scripture-card';
+  card.style.setProperty('--sc-color', s.color);
+  card.innerHTML = `
+    <div class="sc-top">
+      <span class="sc-emoji">${s.emoji}</span>
+      <span class="sc-origin">${s.origin}</span>
+    </div>
+    <div class="sc-name">${s.name}</div>
+    <div class="sc-meta">${s.chapters} ${s.chapters > 10 ? 'chapters' : 'Kands'} · 9 languages · 6 voices</div>
+    <div class="sc-bar"><div class="sc-fill" style="background:${s.color}" data-pct="${s.pct}"></div></div>
+    <div class="sc-teaching">"${s.teaching}"</div>
+  `;
+  grid.appendChild(card);
+});
+
+const VOICES = [
+  { name:"Priya",  gender:"female", desc:"Warm & Soothing",   heights:[12,18,28,22,32,20,14,26,30,18,24,16] },
+  { name:"Devi",   gender:"female", desc:"Crystal Clear",     heights:[20,14,30,26,18,32,22,28,16,24,20,18] },
+  { name:"Anaya",  gender:"female", desc:"Expressive",        heights:[26,30,16,22,28,14,32,18,24,20,26,22] },
+  { name:"Arjun",  gender:"male",   desc:"Deep & Calm",       heights:[30,22,18,28,16,26,20,32,24,18,28,20] },
+  { name:"Dev",    gender:"male",   desc:"Clear & Steady",    heights:[16,24,32,18,26,20,28,14,22,30,16,24] },
+  { name:"Rohan",  gender:"male",   desc:"Warm & Gentle",     heights:[22,28,20,30,14,24,18,26,32,16,22,28] },
+];
+
+const vgrid = document.getElementById('voice-grid');
+VOICES.forEach(v => {
+  const card = document.createElement('div');
+  card.className = 'voice-card';
+  const bars = v.heights.map((h,i) =>
+    `<div class="vc-bar ${v.gender==='female'?'':'vc-bar-male'}" style="height:${h}px;--d:${0.4+i*0.06}s;--dl:${i*0.05}s;background:${v.gender==='female'?'rgba(212,83,126,0.5)':'rgba(55,138,221,0.5)'}"></div>`
+  ).join('');
+  card.innerHTML = `
+    <div class="voice-avatar ${v.gender==='female'?'vc-female':'vc-male'}">${v.gender==='female'?'♀':'♂'}</div>
+    <div class="vc-gender ${v.gender==='female'?'vc-female-label':'vc-male-label'}">${v.gender.toUpperCase()} VOICE</div>
+    <div class="vc-name">${v.name}</div>
+    <div class="vc-desc">${v.desc}</div>
+    <div class="vc-wave">${bars}</div>
+  `;
+  vgrid.appendChild(card);
+});
+
+// Stars
+const starsEl = document.getElementById('stars');
+for(let i=0;i<80;i++){
+  const s = document.createElement('div');
+  s.className = 'star';
+  const size = Math.random()*2+0.5;
+  s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--dl:${Math.random()*5}s;opacity:0`;
+  starsEl.appendChild(s);
+}
+
+// Animate scripture bars on scroll
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.sc-fill').forEach(bar => {
+        bar.style.width = bar.dataset.pct + '%';
+      });
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.scripture-card').forEach(c => observer.observe(c));
+</script>
+</body>
+</html>
