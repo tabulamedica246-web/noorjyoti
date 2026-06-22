@@ -1,0 +1,41 @@
+kind = "web"
+previewPath = "/ekdharma-site/"
+title = "NoorJyoti — Marketing Site"
+version = "1.0.0"
+id = "artifacts/ekdharma-site"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/ekdharma-site/" ]
+localPort = 21223
+
+[services.development]
+run = "pnpm --filter @workspace/ekdharma-site run dev"
+
+[services.production]
+
+[services.production.build]
+args = ["pnpm", "--filter", "@workspace/ekdharma-site", "run", "build"]
+
+[services.production.build.env]
+NODE_ENV = "production"
+PORT = "21223"
+BASE_PATH = "/ekdharma-site/"
+
+[services.production.run]
+args = ["node", "--enable-source-maps", "artifacts/ekdharma-site/dist/server/entry.mjs"]
+
+[services.production.run.env]
+NODE_ENV = "production"
+HOST = "0.0.0.0"
+PORT = "21223"
+BASE_PATH = "/ekdharma-site/"
+
+[services.env]
+PORT = "21223"
+BASE_PATH = "/ekdharma-site/"
