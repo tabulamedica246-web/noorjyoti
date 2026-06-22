@@ -1,0 +1,1279 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: NoorJyoti — Sacred Audio Library API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: catalog
+    description: Traditions, scriptures, chapters, languages and voices
+  - name: tracks
+    description: Audio tracks (TTS narration)
+  - name: unity
+    description: Unity quotes wall
+  - name: me
+    description: Authenticated-user data — bookmarks, favorites, history, preferences
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /catalog/traditions:
+    get:
+      operationId: listTraditions
+      tags: [catalog]
+      summary: List all faith traditions (alphabetical)
+      responses:
+        "200":
+          description: List of traditions with scripture counts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TraditionSummary"
+
+  /catalog/traditions/{slug}:
+    get:
+      operationId: getTradition
+      tags: [catalog]
+      summary: Get a single tradition with its scriptures
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Tradition with scriptures
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TraditionDetail"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /catalog/scriptures:
+    get:
+      operationId: listScriptures
+      tags: [catalog]
+      summary: List all scriptures across all traditions
+      parameters:
+        - name: traditionSlug
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of scriptures
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ScriptureSummary"
+
+  /catalog/scriptures/{id}:
+    get:
+      operationId: getScripture
+      tags: [catalog]
+      summary: Get a single scripture with its chapters
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Scripture with chapters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScriptureDetail"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /catalog/chapters/{id}:
+    get:
+      operationId: getChapter
+      tags: [catalog]
+      summary: Get a single chapter (with scripture and tradition context)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Chapter detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChapterDetail"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /catalog/chapters/{id}/translation/{lang}:
+    get:
+      operationId: getChapterTranslation
+      tags: [catalog]
+      summary: Get a stored translation of a chapter passage (if available)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: lang
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Chapter translation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChapterTranslationItem"
+        "404":
+          description: No stored translation for this chapter/language
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /catalog/languages:
+    get:
+      operationId: listLanguages
+      tags: [catalog]
+      summary: List all supported audio languages
+      responses:
+        "200":
+          description: Supported languages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Language"
+
+  /catalog/voices:
+    get:
+      operationId: listVoices
+      tags: [catalog]
+      summary: List all available narration voices
+      responses:
+        "200":
+          description: Supported voices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Voice"
+
+  /catalog/featured:
+    get:
+      operationId: getFeatured
+      tags: [catalog]
+      summary: Curated featured shelf — one highlight per tradition
+      responses:
+        "200":
+          description: Featured chapters across all traditions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FeaturedItem"
+
+  /tracks/synthesize:
+    post:
+      operationId: synthesizeTrack
+      tags: [tracks]
+      summary: Get or create a TTS audio track for a chapter+language+voice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TrackRequestInput"
+      responses:
+        "200":
+          description: Audio track ready
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Track"
+        "404":
+          description: Chapter not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  # NOTE: Two additional track endpoints are intentionally implemented
+  # outside this OpenAPI contract because they are not consumed by the
+  # generated typed clients:
+  #   GET  /tracks/{id}/audio        — raw MP3 stream from object storage
+  #                                    or DB fallback. Clients reach it via
+  #                                    the `audioUrl` field returned in the
+  #                                    `Track` schema above (stable URL),
+  #                                    so codegen does not need to model
+  #                                    the binary response.
+  #   POST /tracks/admin/replace     — multipart admin-only swap of the
+  #                                    cached audio with a human recording.
+  #                                    Internal tooling endpoint, gated by
+  #                                    the server's ADMIN_USER_IDS env.
+
+  /unity/quotes:
+    get:
+      operationId: listUnityQuotes
+      tags: [unity]
+      summary: List unity quotes (one or more from each tradition)
+      parameters:
+        - name: theme
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Unity quotes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UnityQuoteItem"
+
+  /unity/themes:
+    get:
+      operationId: listUnityThemes
+      tags: [unity]
+      summary: List quote themes (e.g. compassion, light, peace)
+      responses:
+        "200":
+          description: Themes available
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  /paths:
+    get:
+      operationId: listThematicPaths
+      tags: [paths]
+      summary: List thematic paths (curated cross-tradition verse collections)
+      responses:
+        "200":
+          description: Thematic paths
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ThematicPathSummary"
+
+  /paths/{slug}:
+    get:
+      operationId: getThematicPath
+      tags: [paths]
+      summary: Get a single thematic path with its ordered verses
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Thematic path detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ThematicPathDetail"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /me:
+    get:
+      operationId: getMyIdentity
+      tags: [me]
+      summary: Return the authenticated user's opaque userId
+      responses:
+        "200":
+          description: Current user identity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MeIdentity"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /me/bookmarks:
+    get:
+      operationId: listMyBookmarks
+      tags: [me]
+      summary: List authenticated user's bookmarks
+      responses:
+        "200":
+          description: User's bookmarks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BookmarkItem"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+    post:
+      operationId: createMyBookmark
+      tags: [me]
+      summary: Create a bookmark for the authenticated user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookmarkInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookmarkItem"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /me/bookmarks/{id}:
+    delete:
+      operationId: deleteMyBookmark
+      tags: [me]
+      summary: Delete a bookmark belonging to the authenticated user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /me/favorites:
+    get:
+      operationId: listMyFavorites
+      tags: [me]
+      summary: List authenticated user's favorite scriptures
+      responses:
+        "200":
+          description: Favorites
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FavoriteItem"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+    post:
+      operationId: createMyFavorite
+      tags: [me]
+      summary: Favorite a scripture
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FavoriteInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FavoriteItem"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /me/favorites/{scriptureId}:
+    delete:
+      operationId: deleteMyFavorite
+      tags: [me]
+      summary: Unfavorite a scripture
+      parameters:
+        - name: scriptureId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /me/history:
+    get:
+      operationId: listMyHistory
+      tags: [me]
+      summary: List authenticated user's recent listening history
+      responses:
+        "200":
+          description: Recent listening history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HistoryItem"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+    post:
+      operationId: upsertMyHistory
+      tags: [me]
+      summary: Record listening progress for a chapter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HistoryInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HistoryItem"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /me/preferences:
+    get:
+      operationId: getMyPreferences
+      tags: [me]
+      summary: Get authenticated user's preferences
+      responses:
+        "200":
+          description: User preferences
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PreferencesItem"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+    put:
+      operationId: updateMyPreferences
+      tags: [me]
+      summary: Update authenticated user's preferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PreferencesUpdate"
+      responses:
+        "200":
+          description: Updated preferences
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PreferencesItem"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /me/quota:
+    get:
+      operationId: getMySynthQuota
+      tags: [me]
+      summary: Remaining new-audio generation budget for today
+      description: >-
+        Reports how many fresh TTS generations the signed-in user can still
+        create today (and within the current minute). Cached tracks do not
+        count against this budget.
+      responses:
+        "200":
+          description: Current synthesis quota for the user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SynthQuota"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /me/dashboard:
+    get:
+      operationId: getMyDashboard
+      tags: [me]
+      summary: Combined recent activity, suggested next chapter, and stats
+      responses:
+        "200":
+          description: Dashboard payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dashboard"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+
+    MeIdentity:
+      type: object
+      required: [userId]
+      properties:
+        userId:
+          type: string
+
+    ApiError:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+
+    Language:
+      type: object
+      required: [code, name, nativeName, direction]
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        nativeName:
+          type: string
+        direction:
+          type: string
+          enum: [ltr, rtl]
+
+    Voice:
+      type: object
+      required: [id, label, gender, character]
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        gender:
+          type: string
+          enum: [female, male]
+        character:
+          type: string
+
+    TraditionSummary:
+      type: object
+      required:
+        - id
+        - slug
+        - name
+        - shortDescription
+        - region
+        - founded
+        - accentColor
+        - symbolName
+        - scriptureCount
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        name:
+          type: string
+        shortDescription:
+          type: string
+        region:
+          type: string
+        founded:
+          type: string
+        accentColor:
+          type: string
+        symbolName:
+          type: string
+        scriptureCount:
+          type: integer
+
+    TraditionDetail:
+      type: object
+      required:
+        - id
+        - slug
+        - name
+        - shortDescription
+        - longDescription
+        - region
+        - founded
+        - accentColor
+        - symbolName
+        - scriptures
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        name:
+          type: string
+        shortDescription:
+          type: string
+        longDescription:
+          type: string
+        region:
+          type: string
+        founded:
+          type: string
+        accentColor:
+          type: string
+        symbolName:
+          type: string
+        scriptures:
+          type: array
+          items:
+            $ref: "#/components/schemas/ScriptureSummary"
+
+    ScriptureSummary:
+      type: object
+      required:
+        - id
+        - slug
+        - name
+        - originalName
+        - description
+        - era
+        - traditionId
+        - traditionSlug
+        - traditionName
+        - accentColor
+        - chapterCount
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        name:
+          type: string
+        originalName:
+          type: string
+        description:
+          type: string
+        era:
+          type: string
+        traditionId:
+          type: integer
+        traditionSlug:
+          type: string
+        traditionName:
+          type: string
+        accentColor:
+          type: string
+        chapterCount:
+          type: integer
+
+    ScriptureDetail:
+      type: object
+      required:
+        - id
+        - slug
+        - name
+        - originalName
+        - description
+        - era
+        - traditionId
+        - traditionSlug
+        - traditionName
+        - accentColor
+        - chapters
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        name:
+          type: string
+        originalName:
+          type: string
+        description:
+          type: string
+        era:
+          type: string
+        traditionId:
+          type: integer
+        traditionSlug:
+          type: string
+        traditionName:
+          type: string
+        accentColor:
+          type: string
+        chapters:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChapterSummary"
+
+    ChapterSummary:
+      type: object
+      required:
+        - id
+        - number
+        - title
+        - summary
+        - estimatedReadSeconds
+      properties:
+        id:
+          type: integer
+        number:
+          type: integer
+        title:
+          type: string
+        summary:
+          type: string
+        estimatedReadSeconds:
+          type: integer
+
+    ChapterDetail:
+      type: object
+      required:
+        - id
+        - number
+        - title
+        - summary
+        - passageEn
+        - estimatedReadSeconds
+        - scriptureId
+        - scriptureName
+        - scriptureSlug
+        - traditionId
+        - traditionName
+        - traditionSlug
+        - accentColor
+      properties:
+        id:
+          type: integer
+        number:
+          type: integer
+        title:
+          type: string
+        summary:
+          type: string
+        passageEn:
+          type: string
+        estimatedReadSeconds:
+          type: integer
+        scriptureId:
+          type: integer
+        scriptureName:
+          type: string
+        scriptureSlug:
+          type: string
+        traditionId:
+          type: integer
+        traditionName:
+          type: string
+        traditionSlug:
+          type: string
+        accentColor:
+          type: string
+
+    FeaturedItem:
+      type: object
+      required:
+        - chapterId
+        - chapterTitle
+        - chapterNumber
+        - scriptureId
+        - scriptureName
+        - traditionId
+        - traditionSlug
+        - traditionName
+        - accentColor
+        - tagline
+      properties:
+        chapterId:
+          type: integer
+        chapterTitle:
+          type: string
+        chapterNumber:
+          type: integer
+        scriptureId:
+          type: integer
+        scriptureName:
+          type: string
+        traditionId:
+          type: integer
+        traditionSlug:
+          type: string
+        traditionName:
+          type: string
+        accentColor:
+          type: string
+        tagline:
+          type: string
+
+    TrackRequestInput:
+      type: object
+      required: [chapterId, language, voice]
+      properties:
+        chapterId:
+          type: integer
+        language:
+          type: string
+        voice:
+          type: string
+
+    Track:
+      type: object
+      required:
+        - id
+        - chapterId
+        - language
+        - voice
+        - source
+        - durationSeconds
+        - audioUrl
+      properties:
+        id:
+          type: integer
+        chapterId:
+          type: integer
+        language:
+          type: string
+        voice:
+          type: string
+        source:
+          type: string
+          enum: [tts, human]
+        durationSeconds:
+          type: integer
+        audioUrl:
+          type: string
+
+    UnityQuoteItem:
+      type: object
+      required:
+        - id
+        - quote
+        - attribution
+        - theme
+        - traditionId
+        - traditionSlug
+        - traditionName
+        - accentColor
+      properties:
+        id:
+          type: integer
+        quote:
+          type: string
+        attribution:
+          type: string
+        theme:
+          type: string
+        traditionId:
+          type: integer
+        traditionSlug:
+          type: string
+        traditionName:
+          type: string
+        accentColor:
+          type: string
+
+    BookmarkItem:
+      type: object
+      required:
+        - id
+        - chapterId
+        - chapterTitle
+        - chapterNumber
+        - scriptureId
+        - scriptureName
+        - traditionId
+        - traditionName
+        - traditionSlug
+        - accentColor
+        - positionSeconds
+        - note
+        - createdAt
+      properties:
+        id:
+          type: integer
+        chapterId:
+          type: integer
+        chapterTitle:
+          type: string
+        chapterNumber:
+          type: integer
+        scriptureId:
+          type: integer
+        scriptureName:
+          type: string
+        traditionId:
+          type: integer
+        traditionName:
+          type: string
+        traditionSlug:
+          type: string
+        accentColor:
+          type: string
+        positionSeconds:
+          type: integer
+        note:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    BookmarkInput:
+      type: object
+      required: [chapterId]
+      properties:
+        chapterId:
+          type: integer
+        positionSeconds:
+          type: integer
+        note:
+          type: string
+
+    FavoriteItem:
+      type: object
+      required:
+        - scriptureId
+        - scriptureSlug
+        - scriptureName
+        - traditionId
+        - traditionName
+        - traditionSlug
+        - accentColor
+        - createdAt
+      properties:
+        scriptureId:
+          type: integer
+        scriptureSlug:
+          type: string
+        scriptureName:
+          type: string
+        traditionId:
+          type: integer
+        traditionName:
+          type: string
+        traditionSlug:
+          type: string
+        accentColor:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    FavoriteInput:
+      type: object
+      required: [scriptureId]
+      properties:
+        scriptureId:
+          type: integer
+
+    HistoryItem:
+      type: object
+      required:
+        - chapterId
+        - chapterTitle
+        - chapterNumber
+        - scriptureId
+        - scriptureName
+        - traditionId
+        - traditionName
+        - traditionSlug
+        - accentColor
+        - positionSeconds
+        - completed
+        - lastPlayedAt
+      properties:
+        chapterId:
+          type: integer
+        chapterTitle:
+          type: string
+        chapterNumber:
+          type: integer
+        scriptureId:
+          type: integer
+        scriptureName:
+          type: string
+        traditionId:
+          type: integer
+        traditionName:
+          type: string
+        traditionSlug:
+          type: string
+        accentColor:
+          type: string
+        positionSeconds:
+          type: integer
+        completed:
+          type: boolean
+        lastPlayedAt:
+          type: string
+          format: date-time
+
+    HistoryInput:
+      type: object
+      required: [chapterId, positionSeconds]
+      properties:
+        chapterId:
+          type: integer
+        positionSeconds:
+          type: integer
+        completed:
+          type: boolean
+
+    PreferencesItem:
+      type: object
+      required: [defaultLanguage, defaultVoice]
+      properties:
+        defaultLanguage:
+          type: string
+        defaultVoice:
+          type: string
+
+    PreferencesUpdate:
+      type: object
+      properties:
+        defaultLanguage:
+          type: string
+        defaultVoice:
+          type: string
+
+    SynthQuota:
+      type: object
+      required:
+        - limitPerDay
+        - limitPerMinute
+        - remainingDay
+        - remainingMinute
+        - resetDaySeconds
+      properties:
+        limitPerDay:
+          type: integer
+          description: Maximum number of fresh TTS generations allowed per 24h.
+        limitPerMinute:
+          type: integer
+          description: Maximum number of fresh TTS generations allowed per minute.
+        remainingDay:
+          type: integer
+          description: How many fresh TTS generations the user can still make today.
+        remainingMinute:
+          type: integer
+          description: How many fresh TTS generations the user can still make this minute.
+        resetDaySeconds:
+          type: integer
+          description: Seconds until the oldest counted generation falls outside the 24h window.
+
+    Dashboard:
+      type: object
+      required:
+        - recentHistory
+        - recentBookmarks
+        - favoriteCount
+        - chaptersStarted
+        - chaptersCompleted
+      properties:
+        recentHistory:
+          type: array
+          items:
+            $ref: "#/components/schemas/HistoryItem"
+        recentBookmarks:
+          type: array
+          items:
+            $ref: "#/components/schemas/BookmarkItem"
+        favoriteCount:
+          type: integer
+        chaptersStarted:
+          type: integer
+        chaptersCompleted:
+          type: integer
+        suggestedNext:
+          $ref: "#/components/schemas/ChapterDetail"
+
+    ChapterTranslationItem:
+      type: object
+      required:
+        - chapterId
+        - languageCode
+        - translatedPassage
+      properties:
+        chapterId:
+          type: integer
+        languageCode:
+          type: string
+        translatedPassage:
+          type: string
+
+    ThematicPathSummary:
+      type: object
+      required:
+        - id
+        - slug
+        - title
+        - subtitle
+        - accentColor
+        - verseCount
+        - traditions
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        title:
+          type: string
+        subtitle:
+          type: string
+        accentColor:
+          type: string
+        verseCount:
+          type: integer
+        traditions:
+          type: array
+          items:
+            type: string
+
+    ThematicPathVerse:
+      type: object
+      required:
+        - id
+        - verseText
+        - reference
+        - traditionLabel
+      properties:
+        id:
+          type: integer
+        verseText:
+          type: string
+        reference:
+          type: string
+        traditionLabel:
+          type: string
+
+    ThematicPathDetail:
+      type: object
+      required:
+        - id
+        - slug
+        - title
+        - subtitle
+        - accentColor
+        - verses
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        title:
+          type: string
+        subtitle:
+          type: string
+        accentColor:
+          type: string
+        verses:
+          type: array
+          items:
+            $ref: "#/components/schemas/ThematicPathVerse"
