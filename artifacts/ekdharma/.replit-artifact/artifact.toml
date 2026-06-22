@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/ekdharma/"
+title = "NoorJyoti"
+version = "1.0.0"
+id = "artifacts/ekdharma"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/ekdharma/" ]
+localPort = 19303
+
+[services.development]
+run = "pnpm --filter @workspace/ekdharma run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/ekdharma", "run", "build" ]
+publicDir = "artifacts/ekdharma/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19303"
+BASE_PATH = "/ekdharma/"
