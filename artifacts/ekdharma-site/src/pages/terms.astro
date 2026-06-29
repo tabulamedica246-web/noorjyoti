@@ -1,0 +1,57 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const { locale, dir, t } = Astro.locals;
+const updated = "June 29, 2026";
+---
+
+<Layout locale={locale} dir={dir} t={t}>
+  <main class="max-w-3xl mx-auto px-6 py-20 text-foreground/80">
+    <a href="/" class="text-sm text-[#E8A840] hover:text-[#F5D06A] transition-colors">&larr; Back to NoorJyoti</a>
+    <h1 class="font-display font-bold text-4xl text-[#F5D06A] mt-8 mb-2">Terms of Service</h1>
+    <p class="text-sm text-foreground/50 mb-10">Last updated: {updated}</p>
+
+    <div class="space-y-6 leading-relaxed">
+      <p>Welcome to NoorJyoti. By accessing or using NoorJyoti (the "Service"), you agree to these
+      Terms of Service. If you do not agree, please do not use the Service.</p>
+
+      <h2 class="font-display text-2xl text-[#E8A840] pt-4">The service</h2>
+      <p>NoorJyoti provides free access to public-domain scripture texts read aloud in AI-generated
+      voices across multiple languages, for personal, devotional, and educational use. An optional
+      premium subscription may offer additional features.</p>
+
+      <h2 class="font-display text-2xl text-[#E8A840] pt-4">Content & intellectual property</h2>
+      <p>The underlying scripture texts are in the public domain. The AI voice renderings, audio
+      compilations, translations of site copy, design, and the NoorJyoti name and marks are owned by
+      NoorJyoti. You may listen to and share links to the Service, but you may not scrape, bulk-download,
+      resell, or redistribute the audio or content at scale without our written permission.</p>
+
+      <h2 class="font-display text-2xl text-[#E8A840] pt-4">AI-generated audio</h2>
+      <p>Audio is produced by automated text-to-speech and may occasionally contain mispronunciations or
+      errors. NoorJyoti is intended for listening and reflection and is not a substitute for an
+      authoritative printed scripture or scholarly or religious guidance.</p>
+
+      <h2 class="font-display text-2xl text-[#E8A840] pt-4">Acceptable use</h2>
+      <p>You agree not to use the Service unlawfully, to disrupt or attempt to gain unauthorized access
+      to it, or to use it in any way that infringes the rights of others or misrepresents the content.</p>
+
+      <h2 class="font-display text-2xl text-[#E8A840] pt-4">Subscriptions</h2>
+      <p>If you purchase a premium subscription, it renews on a recurring basis until cancelled. You can
+      cancel at any time, effective at the end of the current billing period. Except where required by
+      law, payments are non-refundable.</p>
+
+      <h2 class="font-display text-2xl text-[#E8A840] pt-4">Disclaimer & limitation of liability</h2>
+      <p>The Service is provided "as is" and "as available" without warranties of any kind. To the
+      fullest extent permitted by law, NoorJyoti is not liable for any indirect, incidental, or
+      consequential damages arising from your use of the Service.</p>
+
+      <h2 class="font-display text-2xl text-[#E8A840] pt-4">Changes</h2>
+      <p>We may update these Terms from time to time. Continued use of the Service after changes take
+      effect constitutes acceptance of the revised Terms.</p>
+
+      <h2 class="font-display text-2xl text-[#E8A840] pt-4">Contact</h2>
+      <p>Questions about these Terms? Email
+      <a href="mailto:hello@noorjyoti.app" class="text-[#E8A840] hover:text-[#F5D06A]">hello@noorjyoti.app</a>.</p>
+    </div>
+  </main>
+</Layout>

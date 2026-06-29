@@ -295,10 +295,13 @@ export default function LandingPage({ locale, t }: Props) {
       <footer className="py-12 border-t border-[#C9933A]/20 bg-[#080C1A] text-center">
         <div className="font-display font-bold text-2xl tracking-widest text-[#C9933A] mb-4">{t.brand.wordmark}</div>
         <p className="font-serif italic text-foreground/50 mb-8">{t.brand.tagline}</p>
-        <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8 text-sm text-foreground/60 font-medium px-4">
+        <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 sm:gap-8 text-sm text-foreground/60 font-medium px-4">
           <a href="mailto:hello@noorjyoti.app" className="hover:text-[#F5D06A] transition-colors rounded-md px-1 py-1">{t.footer.contactPrefix} hello@noorjyoti.app</a>
           <a href={innerAppHref} className="hover:text-[#F5D06A] transition-colors rounded-md px-1 py-1">{t.footer.openAppPrefix} /ekdharma</a>
+          <a href="/privacy" className="hover:text-[#F5D06A] transition-colors rounded-md px-1 py-1">Privacy Policy</a>
+          <a href="/terms" className="hover:text-[#F5D06A] transition-colors rounded-md px-1 py-1">Terms of Service</a>
         </div>
+        <p className="mt-8 text-xs text-foreground/40 px-4">© {new Date().getFullYear()} NoorJyoti. Scripture texts are in the public domain; AI voice renderings and site design © NoorJyoti. All rights reserved.</p>
       </footer>
     </div>
   );
