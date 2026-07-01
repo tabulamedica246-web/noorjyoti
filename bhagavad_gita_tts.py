@@ -310,11 +310,11 @@ def main():
     if not input_dir.exists() or not list(input_dir.glob("*.txt")):
         print(f"\n⚠  No .txt files found in '{input_dir}/'")
         create_sample_structure()
-        print(f"\n👉 Next steps:")
+        print("\n👉 Next steps:")
         print(f"   1. Read the guide in '{input_dir}/README.txt'")
-        print(f"   2. Download text from: https://www.gitasupersite.iitk.ac.in/")
+        print("   2. Download text from: https://www.gitasupersite.iitk.ac.in/")
         print(f"   3. Save files in '{input_dir}/' using the naming convention")
-        print(f"   4. Re-run this script")
+        print("   4. Re-run this script")
         return
 
     # Gather all text files
