@@ -10,3 +10,8 @@ dependencies = [
     "psycopg[binary]>=3.3.4",
     "tqdm>=4.67.3",
 ]
+
+[tool.uv]
+# Security: force patched cryptography (GHSA-537c-gmf6-5ccf, transitive via google-auth).
+# Pin to the 48.x patch to avoid a breaking major bump right before launch.
+constraint-dependencies = ["cryptography>=48.0.1,<49"]

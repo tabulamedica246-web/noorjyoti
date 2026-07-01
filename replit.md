@@ -1,6 +1,8 @@
-# [Project name]
+# NoorJyoti
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+NoorJyoti is a free sacred-audio library that reads the world's great scriptures aloud in soothing AI voices across nine languages.
+
+> Deployment, multi-domain locale routing, and China-launch notes live in [`DEPLOYMENT.md`](./DEPLOYMENT.md).
 
 ## Run & Operate
 
@@ -23,7 +25,15 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/ekdharma-site/` — marketing site (Astro SSR + React islands, all locales). Locale routing/meta live in `src/middleware.ts` and `src/i18n/index.ts`; translations in `src/i18n/*.ts`.
+- `artifacts/ekdharma/` — inner web app (audio player, library).
+- `artifacts/web/` — inner web app (legacy duplicate of `ekdharma`).
+- `artifacts/mobile/` — Expo mobile app.
+- `artifacts/api-server/` — shared Express backend.
+- `lib/api-spec/openapi.yaml` — **source of truth for API contracts** (drives codegen in `lib/api-zod` and `lib/api-client-react`).
+- `lib/db/` — Drizzle schema (source of truth for the database).
+- Root `*.py` — standalone TTS content-generation scripts (Bhagavad Gita, Ram Charit Manas, ekdharma voice gen); not part of the web/mobile runtime.
+- Dependency overrides live in `pnpm-workspace.yaml` (`overrides:`). pnpm v10+ no longer reads a `pnpm.overrides` field from `package.json`.
 
 ## Architecture decisions
 
@@ -49,7 +59,10 @@ _Populate as you build — short repo map plus pointers to the source-of-truth f
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- A public-domain scripture-audio library spanning the major traditions (Bible, Quran, Torah, Bhagavad Gita, Dhammapada, Upanishads, Guru Granth Sahib, Jain Agamas and more).
+- On-demand AI narration (OpenAI TTS) in nine languages, cached server-side and upgradeable to human recordings without breaking the client contract.
+- One deployment serving many culturally-tailored domains; the active locale is auto-selected from the request `Host` / URL prefix and overridable via an in-page language switcher.
+- Web (Vite/React) and mobile (Expo) clients, with background/lock-screen playback on mobile.
 
 ## User preferences
 
@@ -57,7 +70,10 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Use **pnpm** (an npm/yarn `install` is blocked by the `preinstall` guard). Dependency overrides go in `pnpm-workspace.yaml`, not `package.json`.
+- The `web` / `ekdharma` Vite config **requires `PORT` and `BASE_PATH` env vars even for `build`** (not just `dev`/`preview`). CI builds must set them, e.g. `PORT=5000 BASE_PATH=/ pnpm --filter @workspace/web build`.
+- Hostname-based locale detection only works in production; in Vite dev, test locales via the URL prefix (`/zh/`, `/he/`, …).
+- API clients are generated from `lib/api-spec/openapi.yaml` — change the spec and re-run codegen rather than editing generated files.
 
 ## Pointers
 

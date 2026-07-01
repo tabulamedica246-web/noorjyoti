@@ -76,6 +76,14 @@ const ROUTES: { match: (path: string) => boolean; meta: RouteMeta }[] = [
     },
   },
   {
+    match: (p) => p === "/early-access",
+    meta: {
+      title: `Request Early Access — ${SITE}`,
+      description:
+        "Sign up for early access to Noorjyoti. Be among the first to explore the world's wisdom traditions in a calm, reverent listening space.",
+    },
+  },
+  {
     match: (p) => p === "/me",
     meta: { title: `Profile — ${SITE}`, description: DEFAULT_DESCRIPTION, noindex: true },
   },
