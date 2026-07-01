@@ -55,10 +55,10 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <Button asChild size="lg" className="rounded-full px-8 text-base bg-primary text-primary-foreground hover:bg-primary/90 h-14">
-                <Link href="/sign-up">Begin Your Journey</Link>
+                <Link href="/early-access">Request Early Access <ArrowRight className="ml-2 w-4 h-4" /></Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="rounded-full px-8 text-base bg-background/50 backdrop-blur border-border hover:bg-accent h-14">
-                <Link href="/library">Explore Library <ArrowRight className="ml-2 w-4 h-4" /></Link>
+                <Link href="/library">Explore Library</Link>
               </Button>
             </div>
           </motion.div>
@@ -257,6 +257,25 @@ export default function Home() {
         </div>
       </section>
       
+      {/* Early Access CTA */}
+      <section id="early-access" className="py-24 bg-card border-t border-border">
+        <div className="container px-4 sm:px-8 max-w-3xl mx-auto text-center">
+          <div className="mx-auto mb-6 w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+            <Sparkles className="w-6 h-6" aria-hidden="true" />
+          </div>
+          <h2 className="font-serif text-3xl md:text-4xl font-bold mb-4">
+            Be the first to listen
+          </h2>
+          <p className="text-lg text-muted-foreground mb-10 max-w-xl mx-auto leading-relaxed">
+            Noorjyoti is opening in early access. Sign up as an individual or as an
+            organization partner and we'll reach out as we welcome our first listeners.
+          </p>
+          <Button asChild size="lg" className="rounded-full px-8 text-base bg-primary text-primary-foreground hover:bg-primary/90 h-14">
+            <Link href="/early-access">Request Early Access <ArrowRight className="ml-2 w-4 h-4" /></Link>
+          </Button>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="py-12 border-t border-border bg-card text-center">
         <p className="text-muted-foreground flex items-center justify-center gap-2">

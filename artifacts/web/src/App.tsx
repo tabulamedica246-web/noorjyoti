@@ -19,7 +19,9 @@ import Navbar from "@/components/layout/navbar";
 import AdminPortal from "@/pages/admin";
 import VideoPage from "@/pages/video";
 import SocialVideoPage from "@/pages/social-video";
+import EarlyAccess from "@/pages/early-access";
 import { RouteSeo } from "@/lib/route-seo";
+import { flushSignupQueue } from "@/lib/signup-queue";
 
 const queryClient = new QueryClient();
 
@@ -183,6 +185,7 @@ function Router() {
         <Route path="/unity" component={Unity} />
         <Route path="/video" component={VideoPage} />
         <Route path="/social-video" component={SocialVideoPage} />
+        <Route path="/early-access" component={EarlyAccess} />
         <Route path="/me">
           <AuthenticatedRoute component={Profile} />
         </Route>
@@ -229,6 +232,12 @@ function ClerkProviderWithRoutes() {
 }
 
 function App() {
+  // Retry-flush any early-access signups that were queued but not yet delivered
+  // (e.g. captured while offline or before an endpoint was configured).
+  useEffect(() => {
+    void flushSignupQueue();
+  }, []);
+
   return (
     <TooltipProvider>
       <WouterRouter base={basePath}>
